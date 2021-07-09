@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(libhooya VERSION 0.0.0
+project(libhooya VERSION 0.1.0
 	DESCRIPTION ""
 	LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -9,6 +9,43 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-Wall -Wextra -pedantic -Wstrict-aliasing -Werror)
+
+# git diff
+execute_process(
+	COMMAND git diff --quiet --exit-code
+	RESULTS_VARIABLE GIT_DIFF_RESULT
+)
+
+# git tag
+execute_process(
+	COMMAND git describe --exact-match --tags
+	OUTPUT_VARIABLE GIT_TAG ERROR_QUIET
+)
+
+# indicate if anything's different between HEAD and current tracked files
+if (${GIT_DIFF_RESULT})
+	set(GIT_DIFF "-dirty")
+endif()
+
+# Change prerelease if this is a tagged commit
+set(PROJECT_VERSION_PRERELEASE "wip")
+if (${GIT_TAG})
+	set(PROJECT_VERSION_PRERELEASE "release")
+endif()
+
+# git commit hash
+execute_process(
+	COMMAND git log -1 --format=%h
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	OUTPUT_VARIABLE GIT_COMMIT_HASH
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+
+configure_file(
+	${CMAKE_SOURCE_DIR}/versioning.hh.in
+	${CMAKE_BINARY_DIR}/versioning.hh
+)
 
 add_library(hooya SHARED
 	$<TARGET_OBJECTS:sock>
