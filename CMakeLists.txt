@@ -99,6 +99,31 @@ target_link_libraries(pipeline
 	PRIVATE -pthread
 )
 
+# --- `test` ---
+find_package(GTest)
+if (${GTEST_FOUND})
+	enable_testing()
+	add_executable(utest
+		test/pipeline/FIFOTest.cc
+	)
+
+	set_target_properties(utest
+		PROPERTIES EXCLUDE_FROM_ALL 1
+	)
+
+	target_link_libraries(utest
+		GTest::gtest GTest::gtest_main
+		pipeline
+	)
+
+	gtest_discover_tests(utest)
+
+	add_custom_target(check
+		COMMAND ${CMAKE_CTEST_COMMAND}
+	)
+	add_dependencies(check utest)
+endif()
+
 # libhooya.so
 install(TARGETS hooya LIBRARY DESTINATION lib)
 

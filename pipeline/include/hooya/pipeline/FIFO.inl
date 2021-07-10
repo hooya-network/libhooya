@@ -31,11 +31,16 @@ template <class T>
 inline void FIFO<T>::Push(T m) {
 	{
 		const std::lock_guard<std::mutex> lock(qLock);
-		queue.push_back(std::move(m));
+		queue.push_back(m);
 	}
 
 	// Alert threads about the message's existence
 	qAlert.Raise();
+}
+
+template <class T>
+inline size_t FIFO<T>::Length() {
+	return queue.size();
 }
 
 template <class T>

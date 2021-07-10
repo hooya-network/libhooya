@@ -46,6 +46,12 @@ public:
 	 */
 	const char *Name();
 
+	/**
+	 * Number of items that have been Push()'d but not Pop()'d
+	 * \return Length of the FIFO buffer
+	 */
+	size_t Length();
+
 private:
 	T dequeue();
 
