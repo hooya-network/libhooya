@@ -1,12 +1,12 @@
 #include "hooya/pipeline/CountingSemaphore.hh"
+#include <iostream>
 
 namespace hooya::pipeline {
 void CountingSemaphore::Raise() {
-	++count;
+	const std::lock_guard<std::mutex> l(semGuard);
 
-	// Do a little dance...
-	semGuard.lock();
-	sem.unlock();
+	// Critical section
+	if (++count == 1) sem.unlock();
 }
 
 CountingSemaphore::CountingSemaphore() {
@@ -18,10 +18,11 @@ CountingSemaphore::CountingSemaphore() {
 }
 
 void CountingSemaphore::Lower() {
-	// (Un)Do a little dance...
-	semGuard.unlock();
 	sem.lock();
+	{
+		const std::lock_guard<std::mutex> l(semGuard);
 
-	assert(count > 0);
-	--count;
+		// Critical section
+		if (--count) sem.unlock();
+	}
 } }
