@@ -118,9 +118,7 @@ if (${GTEST_FOUND})
 
 	gtest_discover_tests(utest)
 
-	add_custom_target(check
-		COMMAND ${CMAKE_CTEST_COMMAND}
-	)
+	add_custom_target(check)
 	add_dependencies(check utest)
 endif()
 
