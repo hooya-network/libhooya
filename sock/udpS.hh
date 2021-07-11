@@ -99,7 +99,7 @@ private:
 	/**
 	 * Incoming data buffer
 	 */
-	char iBuf[MAX_SINGLE_PAYLOAD];
+	uint8_t iBuf[MAX_SINGLE_PAYLOAD];
 
 	std::mutex buf_l;
 

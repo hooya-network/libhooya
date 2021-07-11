@@ -105,6 +105,7 @@ if (${GTEST_FOUND})
 	enable_testing()
 	add_executable(utest
 		test/pipeline/FIFOTest.cc
+		test/sock/DGramTest.cc
 	)
 
 	set_target_properties(utest
@@ -114,6 +115,7 @@ if (${GTEST_FOUND})
 	target_link_libraries(utest
 		GTest::gtest GTest::gtest_main
 		pipeline
+		sock
 	)
 
 	gtest_discover_tests(utest)
