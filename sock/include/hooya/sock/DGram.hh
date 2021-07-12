@@ -66,6 +66,16 @@ public:
 	 * transaction
 	 */
 	void Header(int offset, int contextlen);
+
+	/**
+	 * Magic header number
+	 */
+	static const uint32_t MAGIC = 0x68596121;
+
+	/**
+	 * Current revision of encapsulating datagram format
+	 */
+	static const uint32_t CURRENTVERSION = 0x00;
 private:
 	/**
 	 * Datagram header comes first in the datagram and describes the payload and
@@ -77,11 +87,4 @@ private:
 	 * The datagram payload comes after the header
 	 */
 	std::vector<uint8_t> payload;
-
-	/**
-	 * Magic header number
-	 */
-	const uint32_t MAGIC = 0x68596121;
-
-	const uint32_t CURRENTVERSION = 0x00;
 }; }
