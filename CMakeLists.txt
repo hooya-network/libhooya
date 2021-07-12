@@ -106,6 +106,7 @@ if (${GTEST_FOUND})
 	add_executable(utest
 		test/pipeline/FIFOTest.cc
 		test/sock/DGramTest.cc
+		test/sock/RemoteTest.cc
 	)
 
 	set_target_properties(utest
