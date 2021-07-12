@@ -24,47 +24,51 @@ public:
 	~udpS();
 
 	/**
-	 * Bind to given address
-	 * \param a IP address string
+	 * Sets the address and port to listen on and send from
+	 *
+	 * \param lAddr Local address
+	 * \param port Port
 	 */
-	bool Address(const std::string &a);
+	void Local(const std::string &lAddr, uint16_t port = 0);
 
 	/**
-	 * Bind to given v4 address
-	 * \param inet AF_INET address
+	 * Sets where datagrams should be sent; this will also begin filtering
+	 * incoming packets so only valid packets from this remote host are
+	 * acted on
+	 * \param rHost Remote host
+	 * \param port Port
+	 *
+	 * \warn port = 0 will cause egress to fail unless overridden. Only useful
+	 * for the loopback socket with a well-known port number
 	 */
-	void Address(in_addr_t inet);
+	void Remote(const std::string &rHost, uint16_t port = 0);
 
 	/**
-	 * Bind to given v6 address
-	 * \param inet6 AF_INET6 address
+	 * Don't be particular about the address or port from which to send
+	 * datagrams, just let the OS figure it out.
 	 */
-	void Address(in6_addr inet6);
+	void LocalAnyV4();
 
 	/**
-	 * Bind to wildcard v4 address
+	 * Specify a timeout to use when waiting on ingress data. Useful for tests
+	 * and probably some other things. Generally this will throw a
+	 * hooya::sock::Timeout if the socket is inactive for the given time.
+	 * \param sec Seconds to wait
+	 * \param usec Additional microseconds to wait
 	 */
-	void AnyV4();
-
-	/**
-	 * Bind to wildcard v6 address
-	 */
-	void AnyV6();
-
-	// TODO
-	// bool Address(in_addr_t6 inet);
-
-	/**
-	 * Sets the port to bind the socket to
-	 * \param p Port number
-	 */
-	bool Port(unsigned p);
+	bool RecvTimeout(unsigned sec, unsigned usec = 0);
 
 	/**
 	 * Read one single message from the underlying socket
-	 * \return Message as network-order bytes
+	 * \return Ingress datagram
 	 */
-	const hooya::sock::DGram GetOne();
+	const DGram GetOne();
+
+	/**
+	 * Send one single message to the underlying socket
+	 * \param egress Egress datagram
+	 */
+	void SendOne(const DGram &egress);
 
 private:
 	/**
@@ -72,8 +76,25 @@ private:
 	 */
 	static const size_t MAX_SINGLE_PAYLOAD = 4096;
 
-	struct sockaddr_in servaddr, clientaddr;
-	struct sockaddr_in6 servaddr6, clientaddr6;
+	/**
+	 * V4 address structures
+	 */
+	struct sockaddr_in me, them, ingressaddr;
+
+	/**
+	 * V6 address structures
+	 */
+	struct sockaddr_in6 me6, them6, ingressaddr6;
+
+	/**
+	 * Like Remote() but network-order so it's internal
+	 */
+	void remote(in_addr_t inet, uint16_t port);
+
+	/**
+	 * Like Local() but network-order so it's internal
+	 */
+	void local(in_addr_t inet, uint16_t port = 0);
 
 	/**
 	 * Shutdown a socket and / or close an FD
@@ -81,14 +102,34 @@ private:
 	void shutclose();
 
 	/**
-	 * Reset to v4 defaults
+	 * Reset ingress info to v4 defaults
 	 */
-	void v4Defaults();
+	void v4LocalDefaults();
 
 	/**
-	 * Reset to v6 defaults
+	 * Reset ingress info to v6 defaults
 	 */
-	void v6Defaults();
+	void v6LocalDefaults();
+
+	/**
+	 * Reset egress info to v4 defaults
+	 */
+	void v4RemoteDefaults();
+
+	/**
+	 * Reset egress info to v6 defaults
+	 */
+	void v6RemoteDefaults();
+
+	/**
+	 * Wipe any configuration done by local()
+	 */
+	void clearLocal();
+
+	/**
+	 * Wipe any configuration done by remote()
+	 */
+	void clearRemote();
 
 	/**
 	 * Configured address family of the socket
@@ -105,4 +146,12 @@ private:
 
 	bool bound;
 	unsigned fd;
+
+	/**
+	 * Socket receive timeout
+	 * \todo Make timeout also work for send()
+	 * \todo Define a ClearTimeout() function to reset this value and clear any
+	 * configured timeouts
+	 */
+	struct timeval timeout;
 }; }

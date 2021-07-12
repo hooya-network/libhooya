@@ -18,5 +18,13 @@ public:
 	virtual char const *what() const noexcept { return d; }
 private:
 	const char *d;
+};
+
+class Timeout : public std::exception {
+public:
+	Timeout(const char *desc);
+	virtual char const *what() const noexcept { return d; }
+private:
+	const char *d;
 }; }
 

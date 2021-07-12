@@ -15,4 +15,8 @@ BindException::BindException(int eno) {
 
 ParseException::ParseException(const char *desc) :
 d{desc}
+{ }
+
+Timeout::Timeout(const char *desc) :
+d{desc}
 { } }

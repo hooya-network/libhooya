@@ -15,19 +15,13 @@ bool DGram::Parse(const uint8_t *d, size_t len) {
 	// Extract header and payload raw data
 	std::memcpy(&header, d, pOffset);
 
-	// Interpret network-order longs and shorts
-	header.Magic = ntohl(header.Magic);
-	header.Version = ntohs(header.Version);
-	header.Reserved = ntohs(header.Reserved);
-
 	// Don't accept packets with mismatching magic numbers
-	if (header.Magic != MAGIC) {
+	if (ntohl(header.Magic) != MAGIC)
 		throw ParseException("Magic numbers do not match");
-	}
 
 	payload.assign(d + pOffset, d + len);
 
-	if (header.Version != CURRENTVERSION)
+	if (ntohs(header.Version) != CURRENTVERSION)
 		throw ParseException("Datagram format version mismatch");
 
 	return true;
@@ -45,12 +39,40 @@ void DGram::Payload(const std::string &s) {
 	payload = std::vector<uint8_t>(s.begin(), s.end());
 }
 
-std::vector<uint8_t> DGram::Payload() {
+std::vector<uint8_t> DGram::Payload() const {
 	return payload;
 }
 
-void DGram::Header(int offset, int contextlen) {
-	header.ContextLen = contextlen;
-	header.DataOffset = offset;
-	header.Magic = MAGIC;
+std::vector<uint8_t> DGram::Raw() const {
+	const size_t hSize = sizeof(DGramHeader_t);
+	std::vector<uint8_t> ret;
+
+	/* Reserve since we already know the size */
+	ret.reserve(hSize + payload.size());
+
+	/* Start from the header and build a vector of its raw data */
+	uint8_t *begin = (uint8_t*)&header;
+	ret = std::vector<uint8_t>(begin, begin + hSize);
+
+	/* Append the payload to the constructed vector */
+	ret.insert(std::end(ret), std::begin(payload), std::end(payload));
+
+	return ret;
+}
+
+void DGram::Singleton(const std::vector<uint8_t> &p) {
+	/* Singleton packets have NO_OFFSET and total size is only that of their
+	 * contents */
+	Header(NO_OFFSET, p.size());
+
+	/* Configure payload as normal */
+	Payload(p);
+}
+
+void DGram::Header(uint32_t offset, uint32_t contextlen) {
+	/* Store as network-order */
+	header.ContextLen = htonl(contextlen);
+	header.DataOffset = htonl(offset);
+	header.Magic = htonl(MAGIC);
+	header.Version = htons(CURRENTVERSION);
 } }

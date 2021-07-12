@@ -1,12 +1,14 @@
 #pragma once
 
 #include <vector>
-#include <string_view>
 #include <stdexcept>
 
 namespace hooya::sock {
 /**
+ * \typedef DGramHeader_t
  * Header describing the context of the payload within the larger transaction
+ *
+ * \note All fields are represented in network-order
  */
 typedef struct DGramHeader {
 public:
@@ -36,28 +38,53 @@ public:
 	uint32_t DataOffset : 32;
 } DGramHeader_t;
 
+/**
+ * Datagram representation. Each packet encapsulates a payload, and many
+ * payloads may be combined to form a full message / context
+ */
 class DGram {
 public:
 	/**
 	 * Construct a datagram from a raw stream of network-order characters
 	 * \param d Raw network-order data from a socket
 	 * \param len Length of data
+	 * \TODO Could this be done with a data stream?
 	 */
 	bool Parse(const uint8_t *d, size_t len);
 
+	/**
+	 * Construct a datagram from a raw sequence of bytes
+	 * \param d Raw network-order data from a socket
+	 */
 	bool Parse(const std::vector<uint8_t> &d);
 
 	/**
 	 * Sets the payload of this DGram (for sending)
 	 * \param p Payload data
 	 *
-	 * TODO Would this make more sense to pass in as a stream?
+	 * \TODO Would this make more sense to pass in as a stream?
 	 */
 	void Payload(const std::vector<uint8_t> &p);
 
+	/**
+	 * Sets the payload of this DGram (for sending)
+	 * \param s Payload data as a string
+	 */
 	void Payload(const std::string &s);
 
-	std::vector<uint8_t> Payload();
+	/**
+	 * Copy of the internal payload
+	 *
+	 * \return Packet payload
+	 */
+	std::vector<uint8_t> Payload() const;
+
+	/**
+	 * Raw representation of this datagram suitable for and egress buffer
+	 *
+	 * \return Contiguous representation of raw packet contents
+	 */
+	std::vector<uint8_t> Raw() const;
 
 	/**
 	 * Sets the header information conveyed in this DGram (for sending)
@@ -65,7 +92,13 @@ public:
 	 * \param contextlen Combined length of all payloads of packets in this
 	 * transaction
 	 */
-	void Header(int offset, int contextlen);
+	void Header(uint32_t offset, uint32_t contextlen);
+
+	/**
+	 * Construct a one-off / singleton packet with the given payload
+	 * \param p Payload data
+	 */
+	void Singleton(const std::vector<uint8_t> &p);
 
 	/**
 	 * Magic header number
@@ -76,7 +109,13 @@ public:
 	 * Current revision of encapsulating datagram format
 	 */
 	static const uint32_t CURRENTVERSION = 0x00;
+
+	/**
+	 * Offset of the payload in singleton packets is zero
+	 */
+	static const size_t NO_OFFSET = 0;
 private:
+
 	/**
 	 * Datagram header comes first in the datagram and describes the payload and
 	 * sending context
