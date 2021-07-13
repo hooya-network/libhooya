@@ -19,7 +19,7 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     - name: Build tests
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target check
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target build-test
     - name: Test
       working-directory: ${{github.workspace}}/build
-      run: ctest -C ${{env.BUILD_TYPE}}
+      run: make check

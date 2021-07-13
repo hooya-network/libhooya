@@ -102,27 +102,31 @@ target_link_libraries(pipeline
 # --- `test` ---
 find_package(GTest)
 if (${GTEST_FOUND})
-	enable_testing()
-	add_executable(utest
+	add_executable(unit-test
 		test/pipeline/FIFOTest.cc
 		test/sock/DGramTest.cc
 		test/sock/RemoteTest.cc
 	)
 
-	set_target_properties(utest
+	set_target_properties(unit-test
 		PROPERTIES EXCLUDE_FROM_ALL 1
 	)
 
-	target_link_libraries(utest
+	target_link_libraries(unit-test
 		GTest::gtest GTest::gtest_main
 		pipeline
 		sock
 	)
 
-	gtest_discover_tests(utest)
+	gtest_discover_tests(unit-test)
 
-	add_custom_target(check)
-	add_dependencies(check utest)
+	add_custom_target(build-test)
+	add_dependencies(build-test unit-test)
+
+	add_custom_target(check
+		COMMAND ./unit-test
+		DEPENDS unit-test
+	)
 endif()
 
 # libhooya.so
