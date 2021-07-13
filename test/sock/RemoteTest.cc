@@ -41,6 +41,7 @@ TEST_F(RemoteTest, SendSingletonLoopback) {
  * Send a packet and receive the same one
  */
 TEST_F(RemoteTest, SendReceiveSingletonLoopback) {
+	int i;
 	hooya::sock::Remote r1, r2;
 	hooya::sock::DGram egress, ingress;
 
@@ -61,13 +62,17 @@ TEST_F(RemoteTest, SendReceiveSingletonLoopback) {
 
 	/* Ingress the same packet; try multiple times so we can quickly bail out if
 	 * the packet never showed up to avoid infinite loop over recvfrom() */
-	for (int i = 10; i; --i) {
+	for (i = 10; i; --i) {
 		try {
 			ingress = r1.Get();
+			break;
 		} catch (hooya::sock::Timeout &e) {
 			/* ◦°˚\(*❛‿❛)/˚°◦ */
 		}
 	}
+
+	if (!i)
+		FAIL() << "Timeout reached with no meaningful ingress on the socket";
 
 	/* Received datagram should exactly match the sent datagram */
 	ASSERT_EQ(ingress.Raw(), egress.Raw());

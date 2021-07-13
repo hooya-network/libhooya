@@ -38,7 +38,7 @@ void udpS::SendOne(const DGram &egress) {
 }
 
 const DGram udpS::GetOne() {
-	unsigned len;
+	ssize_t len;
 	socklen_t myLen, iLen;
 	struct sockaddr *myInfo, *iInfo;
 	hooya::sock::DGram d;
@@ -70,13 +70,14 @@ const DGram udpS::GetOne() {
 	do {
 		len = recvfrom(fd, iBuf, MAX_SINGLE_PAYLOAD, 0, iInfo, &iLen);
 
-		/* Timed out */
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
-			throw Timeout("Socket receive timed out");
+		if (len < 0) {
+			/* Timed out */
+			if (errno == EAGAIN || errno == EWOULDBLOCK)
+				throw Timeout("Socket receive timed out");
 
-		/* Other errors */
-		if (errno)
+			/* Other errors */
 			throw(BindException(errno));
+		}
 
 		try {
 			d.Parse(iBuf, len);
