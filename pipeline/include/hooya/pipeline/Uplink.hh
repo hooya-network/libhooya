@@ -37,7 +37,7 @@ private:
 	/**
 	 * Forward a datagram to the FIFO
 	 */
-	void forward(const hooya::sock::DGram d);
+	void forward(const hooya::sock::DGram &d);
 
 	/**
 	 * Forwarding FIFO

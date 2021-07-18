@@ -72,6 +72,8 @@ public:
 
 	void Shutdown();
 
+	bool IsBound();
+
 private:
 	/**
 	 * Largest possible size for any single inbound or outbound datagram

@@ -46,6 +46,10 @@ void Remote::Send(const DGram &d) {
 	sock->SendOne(d);
 }
 
+bool Remote::IsBound() {
+	return sock->IsBound();
+}
+
 bool Remote::Timeout(int sec, int usec) {
 	return sock->RecvTimeout(sec, usec);
 }

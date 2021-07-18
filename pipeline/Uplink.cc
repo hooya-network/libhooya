@@ -37,9 +37,11 @@ void Uplink::SpawnLoopback() {
 			}
 		}
 	}));
+
+	while (!persistent->IsBound());
 }
 
-void Uplink::forward(const hooya::sock::DGram d) {
+void Uplink::forward(const hooya::sock::DGram &d) {
 	/* FIFO receives ingress datagrams */
 	fifo->Push(d);
 } }

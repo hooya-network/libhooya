@@ -32,10 +32,10 @@ public:
 	void Send(const DGram &egress);
 
 	/**
-	 * Socket is able to ingress / egress datagrams
-	 * \return True if this socket can forward and / or receive datagrams
+	 * Socket is bound to any port / address
+	 * \return True if this socket is bound and ready to receive data
 	 */
-	bool IsValid();
+	bool IsBound();
 
 	/**
 	 * Send or receive only from given host on any address

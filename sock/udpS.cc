@@ -114,6 +114,10 @@ const DGram udpS::GetOne() {
 	return d;
 }
 
+bool udpS::IsBound() {
+	return bound;
+}
+
 void udpS::local(in_addr_t inet, uint16_t port) {
 	/* No change - do not disturb file descriptor */
 	if (inet == ntohl(me.sin_addr.s_addr))
