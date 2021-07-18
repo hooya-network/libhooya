@@ -1,10 +1,5 @@
 #include "UplinkTest.hh"
 
-static const std::vector<uint8_t> SMALL_DATA = {
-	/* ☕️ */
-	0xC0, 0xFF, 0xEE
-};
-
 TEST_F(UplinkTest, ForwardOne) {
 	hooya::pipeline::Uplink uplink;
 	hooya::sock::Remote r1;
@@ -13,7 +8,7 @@ TEST_F(UplinkTest, ForwardOne) {
 	auto fifo = std::make_shared<hooya::pipeline::DGramFIFO>();
 
 	/* Smol singleton */
-	egress.Singleton(SMALL_DATA);
+	egress.Singleton(SIMPLE_PACKET);
 
 	/* FIFO to receive messages */
 	uplink.ConnectForwardFIFO(fifo);

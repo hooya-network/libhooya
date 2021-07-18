@@ -1,10 +1,5 @@
 #include "RemoteTest.hh"
 
-static const std::vector<uint8_t> SMALL_DATA = {
-	/* ☕️ */
-	0xC0, 0xFF, 0xEE
-};
-
 /**
  * Try to send a packet without configuring egress port
  */

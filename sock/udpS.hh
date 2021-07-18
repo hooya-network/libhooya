@@ -104,6 +104,11 @@ private:
 	void shutclose();
 
 	/**
+	 * Bind socket according to fd and address family
+	 */
+	void bindSock();
+
+	/**
 	 * Reset ingress info to v4 defaults
 	 */
 	void v4LocalDefaults();

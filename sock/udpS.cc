@@ -38,41 +38,58 @@ void udpS::SendOne(const DGram &egress) {
 		throw BindException(errno);
 }
 
-const DGram udpS::GetOne() {
-	ssize_t len;
-	socklen_t myLen, iLen;
-	struct sockaddr *myInfo, *iInfo;
-	hooya::sock::DGram d;
+void udpS::bindSock() {
+	socklen_t myLen;
+	struct sockaddr *myInfo;
 
 	switch(me.sin_family) {
 	case AF_INET:
 		myInfo = (struct sockaddr *)&me;
-		iInfo = (struct sockaddr *)&ingressaddr;
 		myLen = sizeof(struct sockaddr_in);
-		iLen = sizeof(struct sockaddr_in);
 		break;
 	case AF_INET6:
 		myInfo = (struct sockaddr *)&me6;
-		iInfo = (struct sockaddr *)&ingressaddr6;
 		myLen = sizeof(struct sockaddr_in6);
-		iLen = sizeof(struct sockaddr_in6);
 		break;
 	default:
-		throw "No address family configured";
+		throw BindException("No address family configured");
 	}
 
 	if (shuttingDown)
 		throw ShutdownException();
+	if (bind(fd, myInfo, myLen))
+		throw BindException(errno);
 
-	if (!bound) {
-		if (bind(fd, myInfo, myLen))
-			throw BindException(errno);
+	bound = true;
+}
 
-		bound = true;
+const DGram udpS::GetOne() {
+	ssize_t len;
+	socklen_t iLen;
+	struct sockaddr *iInfo;
+	hooya::sock::DGram d;
+
+	switch(me.sin_family) {
+	case AF_INET:
+		iInfo = (struct sockaddr *)&ingressaddr;
+		iLen = sizeof(struct sockaddr_in);
+		break;
+	case AF_INET6:
+		iInfo = (struct sockaddr *)&ingressaddr6;
+		iLen = sizeof(struct sockaddr_in6);
+		break;
+	default:
+		throw BindException("No address family configured");
 	}
+
+	if (!bound)
+		bindSock();
 
 	do {
 		len = recvfrom(fd, iBuf, MAX_SINGLE_PAYLOAD, 0, iInfo, &iLen);
+
+		if (shuttingDown)
+			throw ShutdownException();
 
 		if (len < 0) {
 			/* Timed out */

@@ -120,6 +120,10 @@ if (${GTEST_FOUND})
 		sock
 	)
 
+	target_include_directories(sock
+		PUBLIC test/include
+	)
+
 	gtest_discover_tests(unit-test)
 
 	add_custom_target(build-test)
