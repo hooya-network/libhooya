@@ -14,6 +14,11 @@ public:
 	~Remote();
 
 	/**
+	 * Making a duplicate of a remote makes no sense, resource is unique
+	 */
+	Remote(Remote& other) = delete;
+
+	/**
 	 * Get a single datagram from the connected UDP socket
 	 * \return Next available datagram on the ingress side
 	 */
@@ -56,6 +61,11 @@ public:
 	 * \return Success setting timeout
 	 */
 	bool Timeout(int sec, int usec = 0);
+
+	/**
+	 * Stop listening on the socket and throw ShutdownException from Get()
+	 */
+	void Shutdown();
 
 	/**
 	 * Default port for loopback communication with (e.g.) hooya-gtk

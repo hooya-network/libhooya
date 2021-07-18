@@ -70,6 +70,8 @@ public:
 	 */
 	void SendOne(const DGram &egress);
 
+	void Shutdown();
+
 private:
 	/**
 	 * Largest possible size for any single inbound or outbound datagram
@@ -145,6 +147,7 @@ private:
 	std::mutex buf_l;
 
 	bool bound;
+	bool shuttingDown;
 	unsigned fd;
 
 	/**

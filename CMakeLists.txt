@@ -85,6 +85,7 @@ add_library(pipeline OBJECT
 	pipeline/CountingSemaphore.cc
 	pipeline/ingressCache.cc
 	pipeline/ingressCacheEntry.cc
+	pipeline/Uplink.cc
 	pipeline/NetMessage.cc
 	pipeline/NetIn.cc
 	pipeline/NetOut.cc
@@ -96,7 +97,7 @@ target_include_directories(pipeline
 )
 
 target_link_libraries(pipeline
-	PRIVATE -pthread
+	PRIVATE -pthread sock
 )
 
 # --- `test` ---
@@ -104,6 +105,7 @@ find_package(GTest)
 if (${GTEST_FOUND})
 	add_executable(unit-test
 		test/pipeline/FIFOTest.cc
+		test/pipeline/UplinkTest.cc
 		test/sock/DGramTest.cc
 		test/sock/RemoteTest.cc
 	)

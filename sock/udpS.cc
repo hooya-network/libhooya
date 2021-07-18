@@ -7,7 +7,8 @@
 
 namespace hooya::sock {
 udpS::udpS() :
-bound(false)
+bound(false),
+shuttingDown(false)
 {
 	// Just default to a v4 socket
 	v4LocalDefaults();
@@ -59,6 +60,9 @@ const DGram udpS::GetOne() {
 	default:
 		throw "No address family configured";
 	}
+
+	if (shuttingDown)
+		throw ShutdownException();
 
 	if (!bound) {
 		if (bind(fd, myInfo, myLen))
@@ -156,6 +160,11 @@ void udpS::LocalAnyV4() {
 /* void udpS::LocalAnyV6() {
 	Local(in6addr_any);
 } */
+
+void udpS::Shutdown() {
+	shuttingDown = true;
+	shutclose();
+}
 
 void udpS::shutclose() {
 	if (bound) {

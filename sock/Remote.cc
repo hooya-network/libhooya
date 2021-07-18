@@ -14,6 +14,10 @@ Remote::~Remote() {
 	delete sock;
 }
 
+void Remote::Shutdown() {
+	sock->Shutdown();
+}
+
 void Remote::Associate(const std::string &rHost, int port) {
 	/* Let the OS choose the specific port & address to send from */
 	sock->LocalAnyV4();

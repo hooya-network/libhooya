@@ -7,9 +7,9 @@
 #include <list>
 #include <memory>
 #include "hooya/pipeline/CountingSemaphore.hh"
+#include "hooya/sock/DGram.hh"
 
 namespace hooya::pipeline {
-
 /**
  * \class FIFO
  * First-in first-out queue with blocking Pop()
@@ -59,7 +59,11 @@ private:
 	CountingSemaphore qAlert;
 	std::list<T> queue;
 	std::string name;
-}; }
+};
+
+using DGramFIFO = FIFO<hooya::sock::DGram>;
+
+}
 
 #include "FIFO.inl"
 

@@ -26,5 +26,8 @@ public:
 	virtual char const *what() const noexcept { return d; }
 private:
 	const char *d;
+};
+
+class ShutdownException : public std::exception {
 }; }
 
