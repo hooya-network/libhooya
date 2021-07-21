@@ -80,6 +80,16 @@ public:
 	std::vector<uint8_t> Payload() const;
 
 	/**
+	 * Transaction ID
+	 */
+	uint32_t TxId() const;
+
+	/**
+	 * Set transaction ID
+	 */
+	void TxId(uint32_t id);
+
+	/**
 	 * Raw representation of this datagram suitable for and egress buffer
 	 *
 	 * \return Contiguous representation of raw packet contents
@@ -93,6 +103,8 @@ public:
 	 * transaction
 	 */
 	void Header(uint32_t offset, uint32_t contextlen);
+
+	DGramHeader_t Header();
 
 	/**
 	 * Construct a one-off / singleton packet with the given payload
@@ -126,4 +138,9 @@ private:
 	 * The datagram payload comes after the header
 	 */
 	std::vector<uint8_t> payload;
+
+	/**
+	 * Transaction ID, calculated from the sender address & port
+	 */
+	uint32_t txid;
 }; }

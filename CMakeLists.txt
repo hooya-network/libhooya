@@ -63,7 +63,7 @@ configure_file(
 add_library(hooya SHARED
 	$<TARGET_OBJECTS:sock>
 	$<TARGET_OBJECTS:pipeline>
-	$<TARGET_OBJECTS:msg>
+	$<TARGET_OBJECTS:net>
 )
 
 # --- `net` ---
@@ -90,6 +90,8 @@ add_library(pipeline OBJECT
 	pipeline/NetMessage.cc
 	pipeline/NetIn.cc
 	pipeline/NetOut.cc
+	pipeline/Exception.cc
+	pipeline/NetDataCache.cc
 )
 
 target_include_directories(pipeline
@@ -98,17 +100,17 @@ target_include_directories(pipeline
 )
 
 target_link_libraries(pipeline
-	PRIVATE -pthread sock msg
+	PRIVATE -pthread sock net
 )
 
-# --- `msg` ---
-add_library(msg OBJECT
-	msg/NetData.cc
+# --- `net` ---
+add_library(net OBJECT
+	net/NetData.cc
 )
 
-target_include_directories(msg
-	PUBLIC msg/include
-	PRIVATE msg
+target_include_directories(net
+	PUBLIC net/include
+	PRIVATE net
 )
 
 # --- `test` ---
@@ -117,9 +119,10 @@ if (${GTEST_FOUND})
 	add_executable(unit-test
 		test/pipeline/FIFOTest.cc
 		test/pipeline/UplinkTest.cc
+		test/pipeline/NetInTest.cc
 		test/sock/DGramTest.cc
 		test/sock/RemoteTest.cc
-		test/msg/NetDataTest.cc
+		test/net/NetDataTest.cc
 	)
 
 	set_target_properties(unit-test
@@ -130,7 +133,7 @@ if (${GTEST_FOUND})
 		GTest::gtest GTest::gtest_main
 		pipeline
 		sock
-		msg
+		net
 	)
 
 	target_include_directories(sock

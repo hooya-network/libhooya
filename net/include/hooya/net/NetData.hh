@@ -24,7 +24,12 @@ public:
 	 * Size in bytes of underlying data
 	 * \return Size
 	 */
-	size_t Size();
+	size_t Size() const;
+
+	/**
+	 * Raw payload bytes in network-order
+	 */
+	const std::vector<uint8_t> &Raw();
 private:
 	std::vector<uint8_t> data;
 }; }

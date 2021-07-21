@@ -1,4 +1,4 @@
-#include "hooya/msg/NetData.hh"
+#include "hooya/net/NetData.hh"
 
 namespace hooya::msg {
 size_t NetData::AddAt(size_t at, const std::vector<uint8_t> &inData) {
@@ -17,6 +17,10 @@ size_t NetData::AddAt(size_t at, const std::vector<uint8_t> &inData) {
 	return data.size();
 }
 
-size_t NetData::Size() {
+size_t NetData::Size() const {
 	return data.size();
+}
+
+const std::vector<uint8_t> &NetData::Raw() {
+	return data;
 } }

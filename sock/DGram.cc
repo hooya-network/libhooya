@@ -75,4 +75,16 @@ void DGram::Header(uint32_t offset, uint32_t contextlen) {
 	header.DataOffset = htonl(offset);
 	header.Magic = htonl(MAGIC);
 	header.Version = htons(CURRENTVERSION);
+}
+
+DGramHeader_t DGram::Header() {
+	return header;
+}
+
+uint32_t DGram::TxId() const {
+	return txid;
+}
+
+void DGram::TxId(uint32_t id) {
+	txid = id;
 } }
