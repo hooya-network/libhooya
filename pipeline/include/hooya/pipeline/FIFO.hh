@@ -7,7 +7,7 @@
 #include <list>
 #include <memory>
 #include "hooya/pipeline/CountingSemaphore.hh"
-#include "hooya/sock/DGram.hh"
+#include "hooya/pipeline/Exception.hh"
 
 namespace hooya::pipeline {
 /**
@@ -17,11 +17,20 @@ namespace hooya::pipeline {
 template <class T>
 class FIFO {
 public:
-	/*
+	FIFO();
+
+	/**
 	 * Push onto beginning of queue
-	 * \arg i Thing being emplaced onto queue
+	 * \param i Thing being emplaced onto queue
 	 */
 	void Push(T i);
+
+	/**
+	 * Interrupt count threads waiting on a Pop().
+	 * Useful when wrangling a number of threads back to the caller for a join()
+	 * \param count Number of threads to awaken
+	 */
+	void Interrupt(int count);
 
 	/**
 	 * Diagnostic Summary of the queue
@@ -53,15 +62,23 @@ public:
 	size_t Length();
 
 private:
+
+	/* Pop off the front item */
 	T dequeue();
 
-	std::mutex qLock;
-	CountingSemaphore qAlert;
+	/* Managing FIFO Pop() interrupts */
+	int toInterrupt;
+	std::mutex interruptLock;
+
+	/* Queue and its [writer] mutual exclusion */
 	std::list<T> queue;
+	std::mutex qLock;
+
+	/* Raised for each incoming item */
+	CountingSemaphore qAlert;
+
 	std::string name;
 };
-
-using DGramFIFO = FIFO<hooya::sock::DGram>;
 
 }
 

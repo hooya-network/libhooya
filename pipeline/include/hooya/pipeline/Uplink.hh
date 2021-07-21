@@ -7,6 +7,8 @@
 #include "hooya/sock/Exception.hh"
 
 namespace hooya::pipeline {
+using DGramFIFO = FIFO<hooya::sock::DGram>;
+
 /**
  * Provide a single, threaded interface to the network
  */

@@ -1,15 +1,37 @@
 namespace hooya::pipeline {
 template <class T>
+inline FIFO<T>::FIFO() :
+toInterrupt(0)
+{ }
+template <class T>
 inline void FIFO<T>::Name(const std::string& n) {
 	name = n;
 }
 
 template <class T>
+inline void FIFO<T>::Interrupt(int count) {
+	const std::lock_guard<std::mutex> lock(interruptLock);
+	toInterrupt = count;
+	while (count--) {
+		qAlert.Raise();
+	}
+}
+
+template <class T>
 inline T FIFO<T>::Pop() {
-	// Wait on an alert from Push(...) call
+	/* Wait on an alert from Push(...) call */
 	qAlert.Lower();
 
-	// dequeue() and process received message...
+	{
+		/* Check if we were awakened by an interrupt */
+		const std::lock_guard<std::mutex> lock(interruptLock);
+		if (toInterrupt) {
+			toInterrupt--;
+			throw exception::Interrupt("FIFO Pop() interrupted");
+		}
+	}
+
+	/* dequeue() and process received message... */
 	T curr = dequeue();
 	return curr;
 }
@@ -34,7 +56,7 @@ inline void FIFO<T>::Push(T m) {
 		queue.push_back(m);
 	}
 
-	// Alert threads about the message's existence
+	/* Alert threads about the message's existence */
 	qAlert.Raise();
 }
 
