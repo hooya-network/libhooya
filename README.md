@@ -21,7 +21,18 @@ structures.
 Installation
 ------------
 
-libhooya builds with CMake:
+libhooya aims to have minimal dependencies. Below are the only libraries it
+depends on:
+
+- [Botan](https://botan.randombit.net/)
+
+libhooya builds with CMake. To build libhooya you'll at least need these
+packages:
+
+- [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/)
+- [CMake](https://cmake.org)
+
+Install from source like this:
 
 ```
 git clone 'https://github.com/hooya-network/libhooya'

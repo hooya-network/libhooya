@@ -6,6 +6,8 @@ project(libhooya VERSION 0.1.0
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+find_package(PkgConfig REQUIRED)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-Wall -Wextra -pedantic -Wstrict-aliasing -Werror)
@@ -66,7 +68,22 @@ add_library(hooya SHARED
 	$<TARGET_OBJECTS:net>
 )
 
-# --- `net` ---
+# --- `crypto` ---
+pkg_check_modules(BOTAN2 REQUIRED botan-2)
+add_library(crypto OBJECT
+	crypto/Keccak.cc
+)
+
+target_link_libraries(crypto
+	PRIVATE ${BOTAN2_LIBRARIES}
+)
+
+target_include_directories(crypto
+	PUBLIC crypto/include
+	PRIVATE crypto ${BOTAN2_INCLUDE_DIRS}
+)
+
+# --- `sock` ---
 add_library(sock OBJECT
 	sock/DGram.cc
 	sock/Remote.cc
@@ -123,6 +140,7 @@ if (${GTEST_FOUND})
 		test/sock/DGramTest.cc
 		test/sock/RemoteTest.cc
 		test/net/NetDataTest.cc
+		test/crypto/KeccakTest.cc
 	)
 
 	set_target_properties(unit-test
@@ -134,6 +152,7 @@ if (${GTEST_FOUND})
 		pipeline
 		sock
 		net
+		crypto
 	)
 
 	target_include_directories(sock
