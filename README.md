@@ -32,6 +32,10 @@ packages:
 - [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/)
 - [CMake](https://cmake.org)
 
+If you're interested in building documentation you'll need:
+
+- [Doxygen](https://www.doxygen.nl/index.html)
+
 Install from source like this:
 
 ```
@@ -40,8 +44,10 @@ cd libhooya
 mkdir build; cd build
 cmake ..
 make
-# Build and run unit-tests
+# (Optional) Build and run unit-tests
 make check
+# (Optional) Build documentation
+make doc
 # Install
 make install
 ```

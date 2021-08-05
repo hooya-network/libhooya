@@ -170,6 +170,31 @@ if (${GTEST_FOUND})
 	)
 endif()
 
+# --- `doc` ---
+find_package(Doxygen)
+if (${DOXYGEN_FOUND})
+	set(DOXYGEN_INDEX ${CMAKE_CURRENT_BINARY_DIR}/html/index.html)
+	set(DOXYGEN_README_MD ${PROJECT_SOURCE_DIR}/README.md)
+	set(DOXYGEN_FOOTER ${PROJECT_SOURCE_DIR}/doc/doxygen/footer.html)
+
+	set(CRYPTO_DIR ${PROJECT_SOURCE_DIR}/crypto)
+	set(NET_DIR ${PROJECT_SOURCE_DIR}/net)
+	set(PIPELINE_DIR ${PROJECT_SOURCE_DIR}/pipeline)
+	set(SOCK_DIR ${PROJECT_SOURCE_DIR}/sock)
+
+	configure_file(doc/doxygen/Doxyfile.in
+		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+
+	add_custom_target(doc
+		DEPENDS README.md ${CRYPTO_DIR} ${NET_DIR} ${PIPELINE_DIR} ${SOCK_DIR}
+		${DOXYGEN_FOOTER} ${DOXYGEN_README_MD}
+		COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMENT "Generating docs"
+	)
+	set_target_properties(doc PROPERTIES EXCLUDE_FROM_ALL 0)
+endif()
+
 # libhooya.so
 install(TARGETS hooya LIBRARY DESTINATION lib)
 
