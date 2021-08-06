@@ -24,6 +24,12 @@ public:
 	 * \param sa Address details
 	 */
 	void Derive(const struct sockaddr *sa);
+
+	/**
+	 * User-readable address in IP:Port format
+	 * \return IP:Port
+	 */
+	std::string Address() const;
 private:
 
 	/**

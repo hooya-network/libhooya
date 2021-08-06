@@ -33,6 +33,12 @@ void DGram::ConnInfo(const struct sockaddr *sa) {
 	replyTo->Derive(sa);
 }
 
+std::string DGram::Address() {
+	if (!replyTo)
+		return "";
+	return replyTo->Address();
+}
+
 bool DGram::Parse(const std::vector<uint8_t> &d) {
 	return Parse(d.data(), d.size());
 }
@@ -85,12 +91,4 @@ void DGram::Header(uint32_t offset, uint32_t contextlen) {
 
 DGramHeader_t DGram::Header() {
 	return header;
-}
-
-uint32_t DGram::TxId() const {
-	return txid;
-}
-
-void DGram::TxId(uint32_t id) {
-	txid = id;
 } }

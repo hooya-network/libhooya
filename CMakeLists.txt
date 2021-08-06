@@ -65,6 +65,7 @@ configure_file(
 add_library(hooya SHARED
 	$<TARGET_OBJECTS:sock>
 	$<TARGET_OBJECTS:pipeline>
+	$<TARGET_OBJECTS:crypto>
 	$<TARGET_OBJECTS:net>
 )
 
@@ -118,7 +119,7 @@ target_include_directories(pipeline
 )
 
 target_link_libraries(pipeline
-	PRIVATE -pthread sock net
+	PRIVATE -pthread sock net crypto
 )
 
 # --- `net` ---

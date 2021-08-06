@@ -45,9 +45,19 @@ bool NetIn::SpawnWorker() {
 }
 
 void NetIn::accumulateAndForward() {
+	uint32_t streamKey;
+
 	/* Get incoming datagrams */
 	sock::DGram in = fromFIFO->Pop();
 	sock::DGramHeader_t header = in.Header();
+	crypto::Keccak k;
+
+	/* Cache by IP:Port + stream multiplexer */
+	k.Update(in.Address());
+	k.Update(std::to_string(header.Stream));
+	k.Finalize();
+
+	streamKey = k.AsKey();
 
 	/* \todo Qualify incoming data
 	 * + Does this data fit in an appropriate transmission window?
@@ -55,7 +65,7 @@ void NetIn::accumulateAndForward() {
 	 *
 	 * ... all should be broken out into separate methods
 	 */
-	size_t total = cache.Add(in.TxId(), header.DataOffset, in.Payload());
+	size_t total = cache.Add(streamKey, header.DataOffset, in.Payload());
 
 	if (total < header.ContextLen) {
 		/* Not all of the payload has been received */
@@ -66,6 +76,8 @@ void NetIn::accumulateAndForward() {
 		/* TODO Raise an error flag because we were fed too much data */
 	}
 
-	/* Entire payload received, forward to next stage */
-	toFIFO->Push(cache.Evict(in.TxId()));
+	/* Entire payload received, stamp and forward to next stage */
+	auto stream = cache.Evict(streamKey);
+	stream.Stamp(streamKey);
+	toFIFO->Push(stream);
 } }

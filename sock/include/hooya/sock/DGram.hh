@@ -31,7 +31,12 @@ public:
 	/**
 	 * Reserved
 	 */
-	uint16_t Reserved : 16;
+	uint8_t Reserved : 8;
+
+	/**
+	 * Multiplexing identifier to track parallel packet streams
+	 */
+	uint8_t Stream : 8;
 
 	/**
 	 * Length of the transaction of which this payload is a part of
@@ -86,16 +91,6 @@ public:
 	std::vector<uint8_t> Payload() const;
 
 	/**
-	 * Transaction ID
-	 */
-	uint32_t TxId() const;
-
-	/**
-	 * Set transaction ID
-	 */
-	void TxId(uint32_t id);
-
-	/**
 	 * Raw representation of this datagram suitable for and egress buffer
 	 *
 	 * \return Contiguous representation of raw packet contents
@@ -123,6 +118,12 @@ public:
 	 * \param sa Where replies to this datagram will be sent
 	 */
 	void ConnInfo(const struct sockaddr *sa);
+
+	/**
+	 * User-readable address in IP:Port format
+	 * \return IP:Port
+	 */
+	std::string Address();
 
 	/**
 	 * Magic header number

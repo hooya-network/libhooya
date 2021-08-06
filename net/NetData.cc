@@ -23,4 +23,12 @@ size_t NetData::Size() const {
 
 const std::vector<uint8_t> &NetData::Raw() {
 	return data;
+}
+
+void NetData::Stamp(uint32_t s) {
+	stamp = s;
+}
+
+uint32_t NetData::Stamp() {
+	return stamp;
 } }

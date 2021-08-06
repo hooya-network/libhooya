@@ -10,9 +10,6 @@ TEST_F(NetInTest, Singleton) {
 	hooya::sock::DGram dgram;
 	dgram.Parse(SIMPLE_PACKET);
 
-	/* Irrelevant transaction ID */
-	dgram.TxId(0xFFFFFF);
-
 	/* Input datagrams to NetIn execution unit */
 	auto in = std::make_shared<DGramFIFO>();
 
@@ -26,5 +23,12 @@ TEST_F(NetInTest, Singleton) {
 
 	/* Provide an input singleton packet and check the output data stream */
 	in->Push(dgram);
-	ASSERT_EQ(out->Pop().Raw(), SIMPLE_PACKET_PAYLOAD);
+	auto res = out->Pop();
+	ASSERT_EQ(res.Raw(), SIMPLE_PACKET_PAYLOAD);
+
+	/* KECCAK256("IP:Port" + "0") as uint32_t
+	 *
+	 * This will identify the reply-to address when we ultimately exit the
+	 * pipeline for egress (not in this test) */
+	ASSERT_EQ(res.Stamp(), 2991736836);
 }

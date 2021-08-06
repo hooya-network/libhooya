@@ -32,4 +32,8 @@ void Connection::Derive(const struct sockaddr *sa) {
 	default:
 		throw ParseException("Unknown address family");
 	}
+}
+
+std::string Connection::Address() const {
+	return address + ":" + std::to_string(port);
 } }

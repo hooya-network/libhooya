@@ -7,7 +7,8 @@
 static const std::vector<uint8_t> SIMPLE_PACKET = {
 	0x68, 0x59, 0x61, 0x21, // Magic number
 	0x00, 0x00,             // Version number
-	0x00, 0x00,             // Reserved
+	0x00,                   // Reserved
+	0x00,                   // Multiplex ID
 	0x03, 0x00, 0x00, 0x00, // Context length
 	0x00, 0x00, 0x00, 0x00, // This offset
 	0xC0, 0xFF, 0xEE        // Data
@@ -21,7 +22,8 @@ static const std::vector<uint8_t> SIMPLE_PACKET_PAYLOAD = {
 static const std::vector<uint8_t> SIMPLE_PACKET_VERSION_MISMATCH = {
 	0x68, 0x59, 0x61, 0x21, // Magic number
 	0x00, 0xAA,             // *Future* version number
-	0x00, 0x00,             // Reserved
+	0x00,                   // Reserved
+	0x00,                   // Multiplex ID
 	0x03, 0x00, 0x00, 0x00, // Context length
 	0x00, 0x00, 0x00, 0x00, // This offset
 	0xC0, 0xFF, 0xEE        // Data
@@ -31,7 +33,8 @@ static const std::vector<uint8_t> SIMPLE_PACKET_VERSION_MISMATCH = {
 static const std::vector<uint8_t> SIMPLE_PACKET_TOO_SMOL = {
 	0x68, 0x59, 0x61, 0x21, // Magic number
 	0x00, 0x00,             // Version number
-	0x00, 0x00,             // Reserved
+	0x00,                   // Reserved
+	0x00,                   // Multiplex ID
 	0x03, 0x00, 0x00, 0x00, // Context length
 	0x00, 0x00, 0x00, 0x00  // This offset
 	// Too short - packets with no payload are not valid

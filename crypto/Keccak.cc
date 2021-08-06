@@ -9,6 +9,11 @@ Keccak::Keccak() :
 hashing(false)
 { }
 
+void Keccak::Hash(const std::string &in) {
+	Update(in);
+	Finalize();
+}
+
 void Keccak::Update(const std::string &in) {
 	if (not hashing) {
 		/* Instantiate Botan hash function if not created yet */
@@ -32,4 +37,15 @@ std::string Keccak::AsHex(bool uppercase) {
 		Finalize();
 
 	return Botan::hex_encode(hashed, KECCAK_SIZE, uppercase);
+}
+
+std::vector<uint8_t> Keccak::AsBytes() {
+	if (hashing)
+		Finalize();
+
+	return std::vector<uint8_t>(hashed, hashed + KECCAK_SIZE);
+}
+
+uint32_t Keccak::AsKey() {
+	return *(uint32_t*)hashed;
 } }

@@ -7,6 +7,7 @@
 #include "hooya/sock/DGram.hh"
 #include "hooya/net/NetData.hh"
 #include "hooya/pipeline/Exception.hh"
+#include "hooya/crypto/Keccak.hh"
 
 namespace hooya::pipeline {
 using DGramFIFO = FIFO<hooya::sock::DGram>;

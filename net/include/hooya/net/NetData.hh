@@ -30,6 +30,12 @@ public:
 	 * Raw payload bytes in network-order
 	 */
 	const std::vector<uint8_t> &Raw();
+
+	void Stamp(uint32_t s);
+	uint32_t Stamp();
+
 private:
 	std::vector<uint8_t> data;
+
+	uint32_t stamp;
 }; }
