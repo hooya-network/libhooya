@@ -102,6 +102,7 @@ const DGram udpS::GetOne() {
 
 		try {
 			d.Parse(iBuf, len);
+			d.ConnInfo(iInfo);
 			break;
 		} catch (const ParseException &e) {
 			std::cout << e.what() << std::endl;

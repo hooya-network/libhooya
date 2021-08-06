@@ -88,6 +88,7 @@ add_library(sock OBJECT
 	sock/DGram.cc
 	sock/Remote.cc
 	sock/udpS.cc
+	sock/connection.cc
 	sock/Exception.cc
 )
 
@@ -200,6 +201,6 @@ install(TARGETS hooya LIBRARY DESTINATION lib)
 
 # Public headers
 install(
-	DIRECTORY sock/include/ pipeline/include/
+	DIRECTORY sock/include/ pipeline/include/ crypto/include net/include
 	DESTINATION include
 )

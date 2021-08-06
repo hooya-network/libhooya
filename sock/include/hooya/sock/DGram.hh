@@ -1,9 +1,15 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include <stdexcept>
 
+/* Forward-declaration of implementation detail */
+struct sockaddr;
+
 namespace hooya::sock {
+class Connection;
+
 /**
  * \typedef DGramHeader_t
  * Header describing the context of the payload within the larger transaction
@@ -113,6 +119,12 @@ public:
 	void Singleton(const std::vector<uint8_t> &p);
 
 	/**
+	 * Stamp datagram with the reply-to address
+	 * \param sa Where replies to this datagram will be sent
+	 */
+	void ConnInfo(const struct sockaddr *sa);
+
+	/**
 	 * Magic header number
 	 */
 	static const uint32_t MAGIC = 0x68596121;
@@ -143,4 +155,9 @@ private:
 	 * Transaction ID, calculated from the sender address & port
 	 */
 	uint32_t txid;
+
+	/**
+	 * Reply-to address details
+	 */
+	std::shared_ptr<Connection> replyTo;
 }; }

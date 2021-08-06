@@ -1,8 +1,9 @@
 #include "hooya/sock/DGram.hh"
 
-#include <arpa/inet.h>
 #include <cstring>
+#include <arpa/inet.h>
 #include "hooya/sock/Exception.hh"
+#include "connection.hh"
 
 namespace hooya::sock {
 bool DGram::Parse(const uint8_t *d, size_t len) {
@@ -25,6 +26,11 @@ bool DGram::Parse(const uint8_t *d, size_t len) {
 		throw ParseException("Datagram format version mismatch");
 
 	return true;
+}
+
+void DGram::ConnInfo(const struct sockaddr *sa) {
+	replyTo = std::make_shared<Connection>();
+	replyTo->Derive(sa);
 }
 
 bool DGram::Parse(const std::vector<uint8_t> &d) {
