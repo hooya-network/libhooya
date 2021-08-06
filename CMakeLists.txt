@@ -192,7 +192,7 @@ if (${DOXYGEN_FOUND})
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		COMMENT "Generating docs"
 	)
-	set_target_properties(doc PROPERTIES EXCLUDE_FROM_ALL 0)
+	set_target_properties(doc PROPERTIES EXCLUDE_FROM_ALL 1)
 endif()
 
 # libhooya.so
