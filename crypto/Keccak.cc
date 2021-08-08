@@ -32,17 +32,11 @@ void Keccak::Finalize() {
 	hashF->final(hashed);
 }
 
-std::string Keccak::AsHex(bool uppercase) {
-	if (hashing)
-		Finalize();
-
+std::string Keccak::AsHex(bool uppercase) const {
 	return Botan::hex_encode(hashed, KECCAK_SIZE, uppercase);
 }
 
-std::vector<uint8_t> Keccak::AsBytes() {
-	if (hashing)
-		Finalize();
-
+std::vector<uint8_t> Keccak::AsBytes() const {
 	return std::vector<uint8_t>(hashed, hashed + KECCAK_SIZE);
 }
 

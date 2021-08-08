@@ -44,13 +44,13 @@ public:
 	 * \param uppercase Set for uppercase hex digits
 	 * \return Hex digits representing hashed data
 	 */
-	std::string AsHex(bool uppercase = false);
+	std::string AsHex(bool uppercase = false) const;
 
 	/**
 	 * Raw result of the hash operation
 	 * \return Hashed bytes
 	 */
-	std::vector<uint8_t> AsBytes();
+	std::vector<uint8_t> AsBytes() const;
 private:
 	/**
 	 * We're using Keccak-256

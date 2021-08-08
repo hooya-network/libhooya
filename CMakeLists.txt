@@ -73,6 +73,8 @@ add_library(hooya SHARED
 pkg_check_modules(BOTAN2 REQUIRED botan-2)
 add_library(crypto OBJECT
 	crypto/Keccak.cc
+	crypto/CID.cc
+	crypto/bin2.cc
 )
 
 target_link_libraries(crypto
@@ -143,6 +145,7 @@ if (${GTEST_FOUND})
 		test/sock/RemoteTest.cc
 		test/net/NetDataTest.cc
 		test/crypto/KeccakTest.cc
+		test/crypto/CIDTest.cc
 	)
 
 	set_target_properties(unit-test
