@@ -26,9 +26,9 @@ std::string CID::Out() {
 	auto bMagic = mbaseMagic();
 	auto hMagic = mhashMagic();
 
-	/* MultiHash + MultiBase + raw data */
-	auto full = hMagic;
-	full.insert(full.end(), bMagic.begin(), bMagic.end());
+	/* MultiBase + MultiHash + raw data */
+	auto full = bMagic;
+	full.insert(full.end(), hMagic.begin(), hMagic.end());
 	full.insert(full.end(), raw.begin(), raw.end());
 
 	/* Actually encode raw data */
