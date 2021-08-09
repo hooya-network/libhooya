@@ -33,6 +33,8 @@ std::string CID::Out() {
 
 	/* Actually encode raw data */
 	switch(currBase) {
+	case BASE8_MBASE:
+		return Bin2::Base8(full);
 	case BASE16_MBASE:
 		return Bin2::Base16(full);
 	case BASE16UPPER_MBASE:

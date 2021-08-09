@@ -13,6 +13,20 @@ public:
 	 * \return Base-16 string
 	 */
 	static std::string Base16(const std::vector<uint8_t> &bin, bool uppercase = false);
+
+	/**
+	 * Base-64 representation of binary data
+	 * \param bin Raw binary data
+	 * \return Base-64 string
+	 */
+	static std::string Base64(const std::vector<uint8_t> &bin);
+
+	/**
+	 * Base-8 representation of binary data
+	 * \param bin Raw binary data
+	 * \return Base-8 string
+	 */
+	static std::string Base8(const std::vector<uint8_t> &bin);
 private:
 
 	/**
