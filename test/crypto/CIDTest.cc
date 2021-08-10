@@ -14,4 +14,7 @@ TEST_F(CIDTest, CIDKeccak256) {
 
 	cid.ChangeBase(hooya::crypto::BASE16UPPER_MBASE);
 	ASSERT_EQ(cid.Out(), "0F1B207611EA58490D36E75E96F1254DA0986CFE82E8265C89C755273578A12D185E4C");
+
+	cid.ChangeBase(hooya::crypto::BASE64_MBASE);
+	ASSERT_EQ(cid.Out(), "B+NkDsI9Swkhptzr0t4kqbQTDZ/QXQTLkTjqpOavFCWjC8m=");
 }

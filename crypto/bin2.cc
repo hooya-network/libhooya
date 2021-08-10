@@ -62,4 +62,44 @@ std::string Bin2::Base8(const std::vector<uint8_t> &bin) {
 	}
 
 	return ret;
-} }
+}
+
+std::string Bin2::Base64(const std::vector<uint8_t> &bin) {
+	std::string ret;
+	uint8_t digit;
+
+	/* Convert to octal first */
+	std::string octal = Base8(bin);
+
+	/* Ensure an even number of octal digits */
+	if (octal.size() & 1)
+		octal = '0' + octal;
+
+	/* Process octal digits as pairs (2, 8-bit numbers) -> 1, 64-bit number */
+	for (auto i = octal.begin(); i < octal.end(); i += 2) {
+		/* First octal digit */
+		digit = (*i - '0') * 8;
+
+		/* ... plus second octal digit */
+		digit += *(i + 1) - '0';
+
+		/* Encode decimal as the normal base-64 character */
+		ret += BASE64_TABLE[digit];
+	}
+
+	if (ret.size() % 4)
+		/* Padding */
+		ret += std::string(4 - (ret.size() % 4), '=');
+
+	return ret;
+}
+
+const char Bin2::BASE64_TABLE[] = {
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+	'O' , 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b',
+	'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+	'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+	'4', '5', '6', '7', '8', '9', '+', '/'
+};
+
+}

@@ -39,6 +39,8 @@ std::string CID::Out() {
 		return Bin2::Base16(full);
 	case BASE16UPPER_MBASE:
 		return Bin2::Base16(full, true);
+	case BASE64_MBASE:
+		return Bin2::Base64(full);
 	default:
 		assert(false);
 	}

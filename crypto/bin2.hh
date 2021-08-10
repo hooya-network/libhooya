@@ -36,4 +36,7 @@ private:
 	 * \return Hex character 0 ~ F
 	 */
 	static char hexDigit(uint8_t one, bool uppercase);
+
+/* "Typical" base-64 encoding */
+	const static char BASE64_TABLE[];
 }; }
