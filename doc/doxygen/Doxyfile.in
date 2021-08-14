@@ -17,6 +17,7 @@ INPUT = "@CRYPTO_DIR@" \
 	"@NET_DIR@" \
 	"@PIPELINE_DIR@" \
 	"@SOCK_DIR@" \
+	"@IMG_DIR@" \
 	"@DOXYGEN_README_MD@"
 FILE_PATTERNS          = *.c \
                          *.cc \

@@ -24,6 +24,7 @@ Installation
 libhooya aims to have minimal dependencies. Below are the only libraries it
 depends on:
 
+- [OpenCV](https://opencv.org/)
 - [Botan](https://botan.randombit.net/)
 
 libhooya builds with CMake. To build libhooya you'll at least need these

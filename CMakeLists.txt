@@ -68,6 +68,7 @@ target_link_libraries(hooya PUBLIC
 	sock
 	crypto
 	net
+	img
 )
 
 # --- `crypto` ---
@@ -125,6 +126,28 @@ target_link_libraries(pipeline
 	PRIVATE -pthread sock net crypto
 )
 
+# --- `img` ---
+find_package(OpenCV REQUIRED)
+add_library(img OBJECT
+	img/Exception.cc
+	img/Image.cc
+)
+option(WITH_OPENCV_HIGHGUI OFF)
+if (${WITH_OPENCV_HIGHGUI})
+	target_compile_definitions(img
+		PUBLIC USE_OPENCV_HIGHGUI
+	)
+endif()
+
+target_include_directories(img
+	PUBLIC img/include
+	PRIVATE img ${OpenCV_INCLUDE_DIRS}
+)
+
+target_link_libraries(img
+	PRIVATE ${OpenCV_LIBS}
+)
+
 # --- `net` ---
 add_library(net OBJECT
 	net/NetData.cc
@@ -148,6 +171,7 @@ if (${GTEST_FOUND})
 		test/net/NetDataTest.cc
 		test/crypto/KeccakTest.cc
 		test/crypto/CIDTest.cc
+		test/img/ImageTest.cc
 	)
 
 	set_target_properties(unit-test
@@ -185,6 +209,7 @@ if (${DOXYGEN_FOUND})
 
 	set(CRYPTO_DIR ${PROJECT_SOURCE_DIR}/crypto)
 	set(NET_DIR ${PROJECT_SOURCE_DIR}/net)
+	set(IMG_DIR ${PROJECT_SOURCE_DIR}/img)
 	set(PIPELINE_DIR ${PROJECT_SOURCE_DIR}/pipeline)
 	set(SOCK_DIR ${PROJECT_SOURCE_DIR}/sock)
 
@@ -210,5 +235,6 @@ install(DIRECTORY
 	pipeline/include/
 	net/include/
 	sock/include/
+	img/include/
 	DESTINATION include
 )
