@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 project(libhooya VERSION 0.1.0
 	DESCRIPTION ""
@@ -62,11 +62,12 @@ configure_file(
 	${CMAKE_BINARY_DIR}/versioning.hh
 )
 
-add_library(hooya SHARED
-	$<TARGET_OBJECTS:sock>
-	$<TARGET_OBJECTS:pipeline>
-	$<TARGET_OBJECTS:crypto>
-	$<TARGET_OBJECTS:net>
+add_library(hooya SHARED)
+target_link_libraries(hooya PUBLIC
+	pipeline
+	sock
+	crypto
+	net
 )
 
 # --- `crypto` ---
@@ -137,6 +138,7 @@ target_include_directories(net
 # --- `test` ---
 find_package(GTest)
 if (${GTEST_FOUND})
+	enable_testing()
 	add_executable(unit-test
 		test/pipeline/FIFOTest.cc
 		test/pipeline/UplinkTest.cc
@@ -149,28 +151,27 @@ if (${GTEST_FOUND})
 	)
 
 	set_target_properties(unit-test
-		PROPERTIES EXCLUDE_FROM_ALL 1
+		PROPERTIES EXCLUDE_FROM_ALL 1)
+
+	gtest_discover_tests(
+		unit-test
+		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test
 	)
 
 	target_link_libraries(unit-test
 		GTest::gtest GTest::gtest_main
-		pipeline
-		sock
-		net
-		crypto
+		hooya
 	)
 
-	target_include_directories(sock
+	target_include_directories(unit-test
 		PUBLIC test/include
 	)
-
-	gtest_discover_tests(unit-test)
 
 	add_custom_target(build-test)
 	add_dependencies(build-test unit-test)
 
 	add_custom_target(check
-		COMMAND ./unit-test
+		COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
 		DEPENDS unit-test
 	)
 endif()
@@ -201,10 +202,13 @@ if (${DOXYGEN_FOUND})
 endif()
 
 # libhooya.so
-install(TARGETS hooya LIBRARY DESTINATION lib)
+install(TARGETS hooya LIBRARY)
 
 # Public headers
-install(
-	DIRECTORY sock/include/ pipeline/include/ crypto/include net/include
+install(DIRECTORY
+	crypto/include/
+	pipeline/include/
+	net/include/
+	sock/include/
 	DESTINATION include
 )
