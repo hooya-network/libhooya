@@ -28,6 +28,12 @@ public:
 	unsigned Height();
 
 	/**
+	 * Scale an image s/t the largest dimension is maxdim
+	 * \return Length of the shorter side after being resized
+	 */
+	unsigned Resize(unsigned maxdim);
+
+	/**
 	 * Fit center of image into a square bounded by the largest dimension
 	 * \return Length of any side
 	 */

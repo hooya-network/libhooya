@@ -23,3 +23,23 @@ TEST_F(ImageTest, CropSquare) {
 	i.CropSquare();
 	ASSERT_EQ(i.Width(), i.Height());
 }
+
+TEST_F(ImageTest, Resize) {
+	hooya::img::Image i;
+
+	i.FromFile(MAHORO_LANDSCAPE);
+	/* Shrink */
+	i.Resize(500);
+	ASSERT_EQ(i.Width(), 500);
+	/* Upscale */
+	i.Resize(5000);
+	ASSERT_EQ(i.Width(), 5000);
+
+	/* Shrink */
+	i.FromFile(MAHORO_PORTRAIT);
+	i.Resize(500);
+	ASSERT_EQ(i.Height(), 500);
+	/* Upscale */
+	i.Resize(5000);
+	ASSERT_EQ(i.Height(), 5000);
+}
