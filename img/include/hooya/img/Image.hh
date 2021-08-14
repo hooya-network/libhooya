@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <filesystem>
 #include "hooya/img/Exception.hh"
 
@@ -10,10 +11,16 @@ public:
 	Image();
 
 	/**
+	 * Byte stream as an image
+	 * \param d byte stream
+	 */
+	void Load(const std::vector<uint8_t> &d);
+
+	/**
 	 * Read image data from a file path
 	 * \param f File on disk
 	 */
-	void FromFile(std::filesystem::path f);
+	void Load(std::filesystem::path f);
 
 	/**
 	 * Loaded image width

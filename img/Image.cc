@@ -15,7 +15,11 @@ Image::Image() :
 mat(std::make_shared<::cv::Mat>())
 { }
 
-void Image::FromFile(std::filesystem::path f) {
+void Image::Load(const std::vector<uint8_t> &d) {
+	mat = std::make_shared<::cv::Mat>(cv::imdecode(d, ::cv::IMREAD_COLOR));
+}
+
+void Image::Load(std::filesystem::path f) {
 	mat = std::make_shared<::cv::Mat>(::cv::imread(f));
 	if (mat->empty())
 		throw(exception::FileRead("File not found"));
